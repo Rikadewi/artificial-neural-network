@@ -20,23 +20,36 @@ class MultiLayerPerceptron:
     def isContinuous(self, attr):
         return not ((self.df[attr].dtypes == 'bool') or (self.df[attr].dtypes == 'object'))
 
-    
-    def infoGain(self, df, attr, entropy):
-        #dataframe row
-        row = df.shape[0]
+    def uniqueTargetValue(self):
+        self.unique = self.df[self.target].unique().tolist()
 
-        #get unique value
-        unique = df[attr].unique().tolist()
+    #assign neural network in self attribute
+    def assignNeuralNetwork(self):
+        self.nn = []
+        for u in self.unique:
+            print(u)
+            newdf = self.df.copy()
+            newdf.loc[newdf[self.target]!=u, self.target] = 0
+            newdf.loc[newdf[self.target]==u, self.target] = 1
+            new_nn = NeuralNetwork(newdf)
+            self.nn.append(new_nn)
 
-        gain = entropy
-        for u in unique:
-            #get occurence
-            freq = (df[attr]==u).sum()
-            newdf = self.splitHorizontalKeepValue(df, attr, u)
-            e = self.entropy(newdf, self.target)
-            gain -= freq/row * e
+    # def infoGain(self, df, attr, entropy):
+    #     #dataframe row
+    #     row = df.shape[0] 
+
+    #     #get unique value
+    #     unique = df[attr].unique().tolist()
+
+    #     gain = entropy
+    #     for u in unique:
+    #         #get occurence
+    #         freq = (df[attr]==u).sum()
+    #         newdf = self.splitHorizontalKeepValue(df, attr, u)
+    #         e = self.entropy(newdf, self.target)
+    #         gain -= freq/row * e
         
-        return gain
+        # return gain
 
     def splitHorizontalKeepValue(self, df, attr, val):
         newdf = df[df[attr]==val]
