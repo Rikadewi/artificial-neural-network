@@ -16,8 +16,10 @@ class Edge:
         self.dw = 0
 
 class Graph:
-    def __init__(self):
+    def __init__(self, bias = Node()):
         self.roots = []
+        self.bias = bias
+        self.children = None
     
     def isOneElement(self):
         return len(self.roots) == 1
@@ -26,62 +28,92 @@ class Graph:
     def addRoot(self, root):
         self.roots.append(root)
 
+    # Bias is a Node
+    def addBias(self, bias):
+        self.bias = bias
+
     # Child is a graph
     def addChild(self, children):
         self.children = children
+
+        # add edge from node
         for currentRoot in self.roots:
             for childRoot in children.roots:
-                currentRoot.addEdge(Edge(0))
-
-    def __str__(self, level=0, value=''):
-        if (level == 0):
-            ret = repr(self.name)+"\n"
-        else:
-            ret = "   "*(level-1)+"|--"+repr(self.name)+" ("+ str(value) +")\n"
-        for child in self.children:
-            ret += child[1].__str__(level=level+1, value=child[0])
-        return ret
-
-    def __repr__(self):
-            return '<tree node representation>'
+                currentRoot.addEdge(Edge())
         
+        # add edge from bias
+        for childRoot in children.roots:
+            self.bias.addEdge(Edge(0))
+
+    def printGraph(self, level=0, value=''):
+        if self.children is None:
+            # output layer
+            for currentRoot in self.roots:
+                print(currentRoot.output, '-> output')
+        else:
+            for currentRoot in self.roots:
+                i = 0
+                for childRoot in self.children.roots:
+                    print(currentRoot.output, '->', childRoot.output, '(', currentRoot.edge[i].weight, ')')
+                    i = i + 1
+            
+            i = 0
+            for childRoot in self.children.roots:
+                print(self.bias.output, '->', childRoot.output, '(', self.bias.edge[i].weight, ')')
+                i = i + 1
+
+            self.children.printGraph()
+
 
 grapha = Graph()
 graphb = Graph()
-graph = Graph()
-graph = Graph()
-graph = Graph()
-graph = Graph()
-graph = Graph()
-graph.addRoot()
-# tree = Tree('afd')
-# treeb = Tree('bfdsaf')
-# treec = Tree('cdasdas')
-# treed = Tree('ddasdas')
-# treee = Tree('edasdas')
-# treef = Tree('fdasdas')
-# treeg = Tree('gdasdas')
-# treeh = Tree('hdasdas')
-# treei = Tree('i')
-# treej = Tree('j')
-# treek = Tree('k')
-# treel = Tree('l')
-# treem = Tree('m')
-# treen = Tree('n')
-# treeo = Tree('o')
-# treep = Tree('p')
-# treeq = Tree('q')
+graphc = Graph()
+graphd = Graph()
+graphe = Graph()
+graphf = Graph()
+graphg = Graph()
+roota = Node(1)
+rootb = Node(2)
+rootc = Node(3)
+rootd = Node(4)
+roote = Node(5)
+rootf = Node(6)
+rootg = Node(7)
+rooth = Node(8)
+rooti = Node(9)
+rootj = Node(10)
+rootk = Node(11)
+rootl = Node(12)
+rootm = Node(13)
+rootn = Node(14)
+rooto = Node(15)
+rootp = Node(16)
+rootq = Node(17)
+rootr = Node(18)
+roots = Node(19)
+grapha.addRoot(roota)
+grapha.addRoot(rootb)
+grapha.addRoot(rootc)
+grapha.addRoot(rootd)
+grapha.addRoot(roote)
+graphb.addRoot(rootf)
+graphb.addRoot(rootg)
+graphb.addRoot(rooth)
+graphc.addRoot(rooti)
+graphc.addRoot(rootj)
+graphc.addRoot(rootk)
+graphd.addRoot(rootl)
+graphd.addRoot(rootm)
+graphd.addRoot(rootn)
+graphe.addRoot(rooto)
+grapha.addBias(rootp)
+graphb.addBias(rootq)
+graphc.addBias(rootr)
+graphd.addBias(roots)
 
-# tree.addChild('b-val',treeb)
-# tree.addChild('c-val',treec)
-# treeb.addChild('d-val',treed)
-# treec.addChild('f-val',treef)
-# treec.addChild('g-val',treeg)
-# treec.addChild('h-val',treeh)
-# treed.addChild('i-val',treei)
-# tree.addChild('wakgeng', treej)
-# tree.addChild('coba', treek)
-# treej.addChild('cobalagi', treel)
-# treeb.addChild('cobaocba', treem)
+grapha.addChild(graphb)
+graphb.addChild(graphc)
+graphc.addChild(graphd)
+graphd.addChild(graphe)
 
-# print(tree)
+grapha.printGraph()
