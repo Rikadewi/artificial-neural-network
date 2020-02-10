@@ -7,10 +7,14 @@ class MultiLayerPerceptron:
     # 
     # df, full dataframe
     # target, target attribute
+    # nHiddenLayer, default = 1 number of hidden layer in one NN
+    # nNode, default = 1 number of node in hidden layer 
     
     # constructor
-    def __init__(self, filename, target):
+    def __init__(self, filename, target,nHiddenLayer = 1, nNode = 1):
         self.readCsv(filename, target)
+        self.nHiddenLayer = nHiddenLayer
+        self.nNode = nNode
 
     # read file csv with given filename in folder data
     def readCsv(self, filename, target):
@@ -24,32 +28,16 @@ class MultiLayerPerceptron:
         self.unique = self.df[self.target].unique().tolist()
 
     #assign neural network in self attribute
-    def assignNeuralNetwork(self):
+    def assignNeuralNetwork(self, nHiddenLayer=0, nNode=0):
         self.nn = []
+        self.uniqueTargetValue()
         for u in self.unique:
             print(u)
             newdf = self.df.copy()
             newdf.loc[newdf[self.target]!=u, self.target] = 0
             newdf.loc[newdf[self.target]==u, self.target] = 1
-            new_nn = NeuralNetwork(newdf)
+            new_nn = NeuralNetwork(newdf, self.target, nHiddenLayer, nNode)
             self.nn.append(new_nn)
-
-    # def infoGain(self, df, attr, entropy):
-    #     #dataframe row
-    #     row = df.shape[0] 
-
-    #     #get unique value
-    #     unique = df[attr].unique().tolist()
-
-    #     gain = entropy
-    #     for u in unique:
-    #         #get occurence
-    #         freq = (df[attr]==u).sum()
-    #         newdf = self.splitHorizontalKeepValue(df, attr, u)
-    #         e = self.entropy(newdf, self.target)
-    #         gain -= freq/row * e
-        
-        # return gain
 
     def splitHorizontalKeepValue(self, df, attr, val):
         newdf = df[df[attr]==val]
@@ -77,61 +65,4 @@ class MultiLayerPerceptron:
     def sortValue(self, df, attr):
         return df.sort_values(by=[attr])
 
-    #handling missing value: get the most frequent value with the same target
-    def handling_missing_value(self):
-        if self.df.isnull().values.any():
-         missing_columns = self.df.columns[self.df.isna().any()].tolist()
-        for col in missing_columns:
-            mode = self.df.mode()[col][0]
-            rows = pd.isnull(self.df).any(1).nonzero()[0].tolist()
-            self.df[col][rows]=mode
-
-    def getAllTreshold(self, df, attr):
-        sortedDf = self.sortValue(df,attr)
-        listClass = sortedDf[self.target].values
-        listCandidateForC = []
-        i = 0
-        while(i < len(listClass)-1):
-            if(listClass[i] != listClass[i+1]):
-                listAttr = sortedDf[attr].values
-                listCandidateForC.append((listAttr[i]+listAttr[i+1])/2)
-            i += 1
-        return listCandidateForC
-
-    def infoGainContinuous(self, df, attr, entropy, treshold):
-        sortedDf = self.sortValue(df,attr)
-        row = sortedDf.shape[0]
-        gain = entropy
-        dfLessThanTreshold = sortedDf[sortedDf[attr] < treshold]
-        dfGreaterThanTreshold = sortedDf[sortedDf[attr] >= treshold]
-        less = self.entropy(dfLessThanTreshold, self.target)
-        greater = self.entropy(dfGreaterThanTreshold, self.target)
-        gain -= (dfLessThanTreshold.shape[0]/row * less + dfGreaterThanTreshold.shape[0]/row * greater)
-        return gain
-
-    def getBestTreshold(self, df, attr):
-        candidate = self.getAllTreshold(df,attr)
-        gains = []
-        for value in candidate:
-            gains.append(self.infoGainContinuous(df, attr, self.entropy(df, self.target), value))
-        
-        #get index of max attributes
-        maxindex = 0
-        for i in range (1,len(gains)):
-            if (gains[maxindex]<gains[i]):
-                maxindex = i
-
-        return candidate[maxindex]
-
-    def makeDiscrete(self, df):
-        newDf = df.copy()
-        for col in newDf.columns:
-            if(self.isContinuous(col)):
-                treshold = self.getBestTreshold(df,col)
-                row = newDf[col].shape[0]
-                for i in range(0, row):
-                    if(newDf[col][i] < treshold):
-                        newDf[col][i] = LOW
-                    else:
-                        newDf[col][i] = HIGH
-        return newDf
+    
