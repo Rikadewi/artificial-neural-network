@@ -45,8 +45,9 @@ class Graph:
         self.children = None
         self.layer = layer
     
-    def isOneElement(self):
-        return len(self.roots) == 1
+    # Check is this graph an output layer
+    def isOutput(self):
+        return graph.children is None
 
     # Root is a Node
     # assign it with appropiate order and layer
@@ -84,6 +85,13 @@ class Graph:
         # add edge from bias
         for childRoot in children.roots:
             self.bias.addEdge(Edge(0))
+
+    def updateDw(self):
+        for root in self.roots:            
+            for edge in root.edges:
+                edge.updateWeight()
+        if (self.children):
+            updateGraphDw(graph.children)
 
     def printGraph(self):
         if self.children is None:

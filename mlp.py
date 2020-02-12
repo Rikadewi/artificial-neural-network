@@ -15,6 +15,7 @@ class MultiLayerPerceptron:
         self.readCsv(filename, target)
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
+        self.assignNeuralNetwork()
 
     # read file csv with given filename in folder data
     def readCsv(self, filename, target):
@@ -24,19 +25,17 @@ class MultiLayerPerceptron:
     def isContinuous(self, attr):
         return not ((self.df[attr].dtypes == 'bool') or (self.df[attr].dtypes == 'object'))
 
-    def uniqueTargetValue(self):
-        self.unique = self.df[self.target].unique().tolist()
-
     #assign neural network in self attribute
-    def assignNeuralNetwork(self, nHiddenLayer=0, nNode=0):
+    def assignNeuralNetwork(self):
         self.nn = []
-        self.uniqueTargetValue()
-        for u in self.unique:
+        self.newdf = []
+        self.unique = self.df[self.target].unique().tolist()
+        for u in unique:
             print(u)
             newdf = self.df.copy()
             newdf.loc[newdf[self.target]!=u, self.target] = 0
             newdf.loc[newdf[self.target]==u, self.target] = 1
-            new_nn = NeuralNetwork(newdf, self.target, nHiddenLayer, nNode)
+            new_nn = NeuralNetwork(self.nHiddenLayer, self.nNode)
             self.nn.append(new_nn)
 
     def splitHorizontalKeepValue(self, df, attr, val):
@@ -65,4 +64,6 @@ class MultiLayerPerceptron:
     def sortValue(self, df, attr):
         return df.sort_values(by=[attr])
 
-    
+    def miniBatch(self, batch=2):
+        for network in self.nn:
+            pass

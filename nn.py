@@ -6,50 +6,47 @@ from graph import *
 class NeuralNetwork:
     # ATTRIBUTE
     # petal_length
-    # df, full dataframe encoded binomial target
-    # target, target attribute
     # nHiddenLayer, default = 1 number of hidden layer in one NN
     # nNode, default = 1 number of node in hidden layer 
     # graph, translated graph from number of features, hiddenlayer and node
 
     # constructor
-    def __init__(self, df, target, nHiddenLayer = 1, nNode = 1):
-        self.df = df
+    def __init__(self, nHiddenLayer = 1, nNode = 1):
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
-        self.target = target
+        self.makeStucture()
 
     #List Data yang masuk berupa array feature [xo,x1...xn] 
     #dan list Weight [w0,w1...wn]
 
-    def makeGraph(self, nRoot):
+    def makeSingleGraph(self, nRoot):
         graph = Graph()
         graph.addBias(Node())
         for i in range (0, nRoot):
             graph.addRoot(Node())
         return graph
         
-    def readDf(self):
+    def makeStucture(self):
         #brp banyak feature, hidden layer, unit di hidden layer
         #banyak feature
         nFeature = len(self.df.columns)-1
 
         graphs= []
         #buat graph pertama untuk input layer
-        graph = self.makeGraph(nFeature)
+        graph = self.makeSingleGraph(nFeature)
         graphs.append(graph)
 
         #buat graph untuk hidden layer
         for i in range (0, self.nHiddenLayer):
-            graph = self.makeGraph(self.nNode)
+            graph = self.makeSingleGraph(self.nNode)
             graphs[len(graphs)-1].addChild(graph)
             graphs.append(graphs[len(graphs)-1].children)
 
         #buat graph untuk output layer
-        graph = self.makeGraph(1)
+        graph = self.makeSingleGraph(1)
         graphs[len(graphs)-1].addChild(graph)
         self.graph = graphs[0]
-        graphs[0].printGraph()        
+        # graphs[0].printGraph()        
 
     def sigmaFunction(self, listData, listWeight):
         sum = 0
@@ -66,28 +63,48 @@ class NeuralNetwork:
     def errorValue(self, target, ouput):
         return 0.5*pow((target-output),2)
 
-    def feedForward(self):
-        ##
-        pass
-    
+    # x (array of integer), array of feature datas
+    def feedForward(self, x):
+        # ngisi output (root) dari sebuah graph
+        # ngisi x ke input layer    
+        for i in range (0, len(x)):
+            self.graph.roots[i].output = x[i]
+
+        #logic: loop semua root yang ada di dalam satu graph, kalikan dengan output
+        graphNow = self.graph
+        nextGraph = self.graph.children
+        output = []
+        while nextGraph != None:
+            for i in nextGraph.roots:
+                result = 0
+                for j in range (0, len(graphNow.roots)):
+                    result+=graphnow.roots[j].edges[i]
+                nextGraph.roots[i].output = result
+            graphNow = nextGraph
+            nextGraph = nextGraph.children
+
     def updateAllDw(self):
-        if (self.graph):
-            self.updateGraphDw(self.graph)
-    
-    def updateGraphDw(self, graph):
-        for root in graph
-     :             for edge in root.edges:
-                edge.updateWeight()
-        if (graph.children):
-            pdateGraphDw()
-    graph.children    
-    def backPropagation(self):
-        _backPropagation(self.graph)
+        if self.graph:
+            self.graph.updateDw()
+
+    # y (integer), target predict data
+    def backPropagation(self, y):
+        _backPropagation(self.graph, y)
 
     # private method of back propagation
-    def _backPropagation(self, graph):
-        if graph.children is not None:
+    def _backPropagation(self, graph, y):
+        # add recursive somwhere, return graph
+        if not graph.isOutput():
             for root in graph.roots:
+                i = 0
                 for edge in root.edges:
-                    edges.dw = 
-            
+                    # all dw before
+                    sumDwChild = 0
+                    if graph.children.isOutput():
+                        sumDwChild = (y - graph.children.roots[i].output)*graph.children.roots[i].output
+                    else:    
+                        for edgeChild in graph.children.roots[i].edges:
+                            sumDwChild = sumDwChild + edgeChild.dw*edgeChild.weight
+
+                    edges.dw = sumDwChild*root.output*(1 - graph.children.roots[i].output)
+                    i = i + 1
