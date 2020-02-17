@@ -47,7 +47,7 @@ class Graph:
     
     # Check is this graph an output layer
     def isOutput(self):
-        return graph.children is None
+        return self.children is None
 
     # Root is a Node
     # assign it with appropiate order and layer
@@ -86,12 +86,12 @@ class Graph:
         for childRoot in children.roots:
             self.bias.addEdge(Edge(0))
 
-    def updateDw(self):
-        for root in self.roots:            
-            for edge in root.edges:
-                edge.updateWeight()
-        if (self.children):
-            updateGraphDw(graph.children)
+    # def updateDw(self):
+    #     for root in self.roots:            
+    #         for edge in root.edges:
+    #             edge.updateWeight()
+    #     if (self.children):
+    #         updateGraphDw(graph.children)
 
     def printGraph(self):
         if self.children is None:
@@ -103,14 +103,14 @@ class Graph:
                 i = 0
                 for childRoot in self.children.roots:
                     print(str(currentRoot.layer) + '.' + str(currentRoot.order) + ' (' + str(currentRoot.output) 
-                        + ') --(' + str(currentRoot.edges[i].weight) + ')--> ' 
+                        + ') --(' + str(currentRoot.edges[i].weight) + ' | ' + str(currentRoot.edges[i].dw) + ')--> ' 
                         + str(childRoot.layer) + '.' + str(childRoot.order) + ' (' + str(childRoot.output) + ')')
                     i = i + 1
             
             i = 0
             for childRoot in self.children.roots:
                 print(str(self.bias.layer) + '.' + str(self.bias.order) + ' (' + str(self.bias.output) 
-                    + ') --(' + str(self.bias.edges[i].weight) + ')--> ' 
+                    + ') --(' + str(self.bias.edges[i].weight) + ' | ' + str(self.bias.edges[i].dw) +')--> ' 
                     + str(childRoot.layer) + '.' + str(childRoot.order) + ' (' + str(childRoot.output) + ')')
                 i = i + 1
 

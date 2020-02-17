@@ -30,12 +30,13 @@ class MultiLayerPerceptron:
         self.nn = []
         self.newdf = []
         self.unique = self.df[self.target].unique().tolist()
-        for u in unique:
+        for u in self.unique:
             print(u)
             newdf = self.df.copy()
             newdf.loc[newdf[self.target]!=u, self.target] = 0
             newdf.loc[newdf[self.target]==u, self.target] = 1
-            new_nn = NeuralNetwork(self.nHiddenLayer, self.nNode)
+            nFeature = len(self.df.columns)-1
+            new_nn = NeuralNetwork(nFeature, self.nHiddenLayer, self.nNode)
             self.nn.append(new_nn)
 
     def splitHorizontalKeepValue(self, df, attr, val):
