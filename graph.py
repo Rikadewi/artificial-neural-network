@@ -1,3 +1,5 @@
+import random
+
 class Node:
     # ATTRIBUTE
     #
@@ -21,8 +23,8 @@ class Edge:
     # weight
     # dw, accumulate this through a batch
 
-    def __init__(self, weight = 0, learning_rate=0.1):
-        self.weight = weight
+    def __init__(self, learning_rate=0.1):
+        self.weight = random.random()
         self.dw = 0
         self.learning_rate = learning_rate
 
@@ -94,7 +96,7 @@ class Graph:
         
         # add edge from bias
         for childRoot in children.roots:
-            self.bias.addEdge(Edge(0))
+            self.bias.addEdge(Edge())
 
     def updateDw(self):
         for root in self.roots:            
@@ -141,7 +143,7 @@ class Graph:
 # rootf = Node(6)
 # rootg = Node(7)
 # rooth = Node(8)
-# rooti = Node(9)
+# rooti = Node(9)edge
 # rootj = Node(10)
 # rootk = Node(11)
 # rootl = Node(12)
