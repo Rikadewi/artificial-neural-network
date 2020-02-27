@@ -75,11 +75,12 @@ class NeuralNetwork:
             for i in range (0, len(nextGraph.roots)):
                 result = 0
                 for j in range (0, len(graphNow.roots)):
-                    print(graphNow.roots[j].edges[i].weight)
-                    print(graphNow.roots[j].output)
+                    # print(graphNow.roots[j].edges[i].weight)
+                    # print(graphNow.roots[j].output)
                     result+=graphNow.roots[j].edges[i].weight*graphNow.roots[j].output
                 result+=graphNow.bias.output*graphNow.bias.edges[i].weight
                 nextGraph.roots[i].output = result
+                print("RESULT = " + str(result))
             graphNow = nextGraph
             nextGraph = nextGraph.children
 
@@ -88,6 +89,10 @@ class NeuralNetwork:
     def updateAllDw(self):
         if self.graph:
             self.graph.updateDw()
+
+    def getGraphOutput(self):
+        if (self.graph):
+            return self.graph.getLastOutput()
 
     # y (integer), target predict data
     def backPropagation(self, y):
@@ -119,13 +124,12 @@ class NeuralNetwork:
                 sumDwChild = edge.dw
                 if graph.children.isOutput():
                     sumDwChild = (y - graph.children.roots[i].output)*graph.children.roots[i].output
-                    print(sumDwChild)
+                    # print(sumDwChild)
                 else:
                     for edgeChild in graph.children.roots[i].edges:
                         sumDwChild = sumDwChild + edgeChild.dw*edgeChild.weight
 
                 edge.dw = sumDwChild*graph.bias.output*(1 - graph.children.roots[i].output)
-                print(edge.dw)
                 i = i + 1
 
         return graph

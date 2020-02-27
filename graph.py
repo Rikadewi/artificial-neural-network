@@ -49,6 +49,15 @@ class Graph:
     def isOutput(self):
         return self.children is None
 
+    # Get the last output of the graph
+    def getLastOutput(self):
+        graphNow = self
+        while not graphNow.isOutput():
+            graphNow = graphNow.children
+        # print("OUTPUT")
+        # print(graphNow.roots[0].output)
+        return graphNow.roots[0].output
+
     # Root is a Node
     # assign it with appropiate order and layer
     def addRoot(self, root):
@@ -86,12 +95,12 @@ class Graph:
         for childRoot in children.roots:
             self.bias.addEdge(Edge(0))
 
-    # def updateDw(self):
-    #     for root in self.roots:            
-    #         for edge in root.edges:
-    #             edge.updateWeight()
-    #     if (self.children):
-    #         updateGraphDw(graph.children)
+    def updateDw(self):
+        for root in self.roots:            
+            for edge in root.edges:
+                edge.updateWeight()
+        if (self.children):
+            self.children.updateDw()
 
     def printGraph(self):
         if self.children is None:

@@ -31,13 +31,13 @@ class MultiLayerPerceptron:
         self.newdf = []
         self.unique = self.df[self.target].unique().tolist()
         for u in self.unique:
-            print(u)
             newdf = self.df.copy()
             newdf.loc[newdf[self.target]!=u, self.target] = 0
             newdf.loc[newdf[self.target]==u, self.target] = 1
             nFeature = len(self.df.columns)-1
             new_nn = NeuralNetwork(nFeature, self.nHiddenLayer, self.nNode)
             self.nn.append(new_nn)
+            self.newdf.append(newdf)
 
     def splitHorizontalKeepValue(self, df, attr, val):
         newdf = df[df[attr]==val]
@@ -65,6 +65,49 @@ class MultiLayerPerceptron:
     def sortValue(self, df, attr):
         return df.sort_values(by=[attr])
 
-    def miniBatch(self, batch=2):
-        for network in self.nn:
-            pass
+    def makeBatches(self, batchsize):
+        numofbatches = int(self.df.shape[0]/batchsize)
+        remainder = self.df.shape[0]%batchsize
+        batches = []
+        for i in range (0, numofbatches):
+            newbatch = self.dropAttr(self.df, self.target)[i*batchsize: (i+1)*batchsize].values.tolist()
+            batches.append(newbatch)
+        if (remainder):
+            newbatch = self.dropAttr(self.df, self.target)[(i+1)*batchsize : (i+1)*batchsize + remainder].values.tolist()
+            batches.append(newbatch)
+        return batches
+
+    def miniBatch(self, batchsize=32):
+        maxiteration = 100
+        errortreshold = 0.01
+        batches = self.makeBatches(batchsize)
+        for i in range(0, len(self.nn)):
+            # print("NN [" + str(i) + "]")
+            error = 100
+            iteration = 0
+            while(iteration < maxiteration) and (error > errortreshold):
+                j = 0
+                idxbatch = 0
+                print(len(self.newdf[i][self.newdf[i][self.target]==1]))
+                while (error > errortreshold) and (idxbatch < len(batches)):
+                    errorlist = []
+                    for x in batches[idxbatch]:
+                        self.nn[i].feedForward(x)
+                        if (self.nn[i].getGraphOutput() != self.newdf[i][self.target][j]):
+                            print(self.nn[i].getGraphOutput())
+                            print(self.newdf[i][self.target][j])
+                        self.nn[i].backPropagation(self.newdf[i][self.target][j])
+                        errorlist.append(self.nn[i].errorValue(self.newdf[i][self.target][j], self.nn[i].getGraphOutput()))
+                        j += 1
+                    idxbatch += 1
+                    self.nn[i].updateAllDw()
+                    print("ERRORLIST " + str(len(errorlist)))
+                    print(errorlist)
+                    print("SUM ERROR")
+                    error = np.sum(errorlist)
+                    print(error)
+                iteration += 1
+                print()
+
+mlp = MultiLayerPerceptron("iris", "species", 1, 1)
+mlp.miniBatch()
