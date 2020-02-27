@@ -21,15 +21,16 @@ class Edge:
     # weight
     # dw, accumulate this through a batch
 
-    def __init__(self, weight = 0):
+    def __init__(self, weight = 0, learning_rate=0.1):
         self.weight = weight
         self.dw = 0
+        self.learning_rate = learning_rate
 
     def addDw(self, dw):
         self.dw = self.dw + dw
 
     def updateWeight(self):
-        self.weight = self.weight + self.dw
+        self.weight = self.weight + self.dw * self.learning_rate
         self.dw = 0
 
 class Graph:

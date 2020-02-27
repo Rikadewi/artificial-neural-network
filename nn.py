@@ -79,8 +79,9 @@ class NeuralNetwork:
                     # print(graphNow.roots[j].output)
                     result+=graphNow.roots[j].edges[i].weight*graphNow.roots[j].output
                 result+=graphNow.bias.output*graphNow.bias.edges[i].weight
+                result = self.sigmoidFunction(result)
                 nextGraph.roots[i].output = result
-                print("RESULT = " + str(result))
+                # print("RESULT = " + str(result))
             graphNow = nextGraph
             nextGraph = nextGraph.children
 

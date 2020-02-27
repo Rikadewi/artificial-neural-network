@@ -77,9 +77,9 @@ class MultiLayerPerceptron:
             batches.append(newbatch)
         return batches
 
-    def miniBatch(self, batchsize=32):
-        maxiteration = 100
-        errortreshold = 0.01
+    def miniBatch(self, batchsize=32, errortreshold=0.1):
+        maxiteration = 1
+        # errortreshold = 0.01
         batches = self.makeBatches(batchsize)
         for i in range(0, len(self.nn)):
             # print("NN [" + str(i) + "]")
@@ -88,26 +88,32 @@ class MultiLayerPerceptron:
             while(iteration < maxiteration) and (error > errortreshold):
                 j = 0
                 idxbatch = 0
-                print(len(self.newdf[i][self.newdf[i][self.target]==1]))
                 while (error > errortreshold) and (idxbatch < len(batches)):
                     errorlist = []
                     for x in batches[idxbatch]:
                         self.nn[i].feedForward(x)
-                        if (self.nn[i].getGraphOutput() != self.newdf[i][self.target][j]):
-                            print(self.nn[i].getGraphOutput())
-                            print(self.newdf[i][self.target][j])
                         self.nn[i].backPropagation(self.newdf[i][self.target][j])
+                        self.nn[i].graph.printGraph()
+                        print('-------------------------')
+                        # print("ini x")
+                        # print(x)
+                        # print("ini target")
+                        print(self.newdf[i][self.target][j])
                         errorlist.append(self.nn[i].errorValue(self.newdf[i][self.target][j], self.nn[i].getGraphOutput()))
+    
                         j += 1
                     idxbatch += 1
+                    print('batch baru')
                     self.nn[i].updateAllDw()
-                    print("ERRORLIST " + str(len(errorlist)))
-                    print(errorlist)
-                    print("SUM ERROR")
+                    # print("ERRORLIST " + str(len(errorlist)))
+                    # print(errorlist)
+                    # print("SUM ERROR")
                     error = np.sum(errorlist)
-                    print(error)
+                    # print(error)
                 iteration += 1
-                print()
+                print('nn baru')
+                # print()
+        print(iteration)
 
 mlp = MultiLayerPerceptron("iris", "species", 1, 1)
 mlp.miniBatch()
