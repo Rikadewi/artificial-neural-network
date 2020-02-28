@@ -3,6 +3,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from nn import NeuralNetwork
 
+SEED = 13517006
+
 class MultiLayerPerceptron:
     # ATTRIBUTE
     # 
@@ -94,7 +96,7 @@ class MultiLayerPerceptron:
         return self.unique[predictIndex]
 
     def splitDf(self):
-        self.df , self.test = train_test_split(self.df, test_size = 0.2)
+        self.df , self.test = train_test_split(self.df, test_size = 0.2, random_state=SEED)
         self.df = (self.df).reset_index(drop=True)
         self.test = (self.test).reset_index(drop=True)
 
