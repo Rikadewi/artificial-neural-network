@@ -74,7 +74,7 @@ class MultiLayerPerceptron:
                     errorlist = []
                     for x in batches[idxbatch]:
                         self.nn[i].feedForward(x)
-                        self.nn[i].graph.printGraph()
+                        # self.nn[i].graph.printGraph()
                         self.nn[i].backPropagation(self.newdf[i][self.target][j])
                         print('-------------------------')
                         self.nn[i].graph.printGraph()

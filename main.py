@@ -4,12 +4,12 @@ mlp = MultiLayerPerceptron()
 # mlp = MultiLayerPerceptron("iris", "species", 2, 100)
 # mlp.miniBatch()
 
-while(True):
-    print("Please input " + str(len(mlp.df.columns)-1) + " features for predict")
-    for i in range(len(mlp.df.columns)-1):
-        x = []
-        x.append(float(input()))
-    print(mlp.predict(x))
+# while(True):
+#     print("Please input " + str(len(mlp.df.columns)-1) + " features for predict")
+#     for i in range(len(mlp.df.columns)-1):
+#         x = []
+#         x.append(float(input()))
+#     print(mlp.predict(x))
 
 # myMlp = MultiLayerPerceptron("iris", "species", 1, 1)
 # # print(myMlp.unique)
