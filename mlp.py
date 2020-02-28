@@ -3,8 +3,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from nn import NeuralNetwork
 
-SEED = 13517006
-
 class MultiLayerPerceptron:
     # ATTRIBUTE
     # 
@@ -16,12 +14,13 @@ class MultiLayerPerceptron:
     # constructor
     def __init__(self, 
             filename='iris', target='species', learningRate=0.1, nHiddenLayer = 2, 
-            nNode = 10, batchsize=30, errorTreshold=0.3, maxIteration=200):
+            nNode = 10, batchsize=30, errorTreshold=0.3, maxIteration=200, seed=13517006):
         self.readCsv(filename, target)
         self.learningRate = learningRate
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
         self.assignNeuralNetwork()
+        self.seed = seed
         self.splitDf()
         self.miniBatch(batchsize, errorTreshold, maxIteration)
 
@@ -96,7 +95,7 @@ class MultiLayerPerceptron:
         return self.unique[predictIndex]
 
     def splitDf(self):
-        self.df , self.test = train_test_split(self.df, test_size = 0.2, random_state=SEED)
+        self.df , self.test = train_test_split(self.df, test_size = 0.2, random_state=self.seed)
         self.df = (self.df).reset_index(drop=True)
         self.test = (self.test).reset_index(drop=True)
 

@@ -1,11 +1,9 @@
 from mlp import MultiLayerPerceptron
 
 mlp = MultiLayerPerceptron(
-    learningRate = 0.2,
-    nHiddenLayer = 3, 
-    nNode = 3, 
-    errorTreshold = 0.3,
-    maxIteration=10
+    nHiddenLayer = 1, 
+    nNode = 2, 
+    maxIteration=1
 )
 
 for nn in mlp.nn:
