@@ -11,7 +11,7 @@ class NeuralNetwork:
     # graph, translated graph from number of features, hiddenlayer and node
 
     # constructor
-    def __init__(self, nFeature, nHiddenLayer = 1, nNode = 1):
+    def __init__(self, nFeature, nHiddenLayer, nNode):
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
         self.makeStucture(nFeature)
@@ -53,6 +53,7 @@ class NeuralNetwork:
         return sum
 
     def sigmoidFunction(self, data):
+        # print('data:', data)
         return 1/(math.exp(-data)+1)
         
     def deltaW(self, learningRate, target, output, input):
@@ -75,10 +76,13 @@ class NeuralNetwork:
             for i in range (0, len(nextGraph.roots)):
                 result = 0
                 for j in range (0, len(graphNow.roots)):
-                    # print(graphNow.roots[j].edges[i].weight)
-                    # print(graphNow.roots[j].output)
+                    print("weight::", graphNow.roots[j].edges[i].weight)
+                    # print("output::", graphNow.roots[j].output)
                     result+=graphNow.roots[j].edges[i].weight*graphNow.roots[j].output
                 result+=graphNow.bias.output*graphNow.bias.edges[i].weight
+                # print("result:", result)
+                # print("bias:", graphNow.bias.output)
+                # print("weight:", graphNow.bias.edges[i].weight)
                 result = self.sigmoidFunction(result)
                 nextGraph.roots[i].output = result
                 # print("RESULT = " + str(result))

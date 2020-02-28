@@ -33,6 +33,8 @@ class Edge:
 
     def updateWeight(self):
         self.weight = self.weight + self.dw * self.learning_rate
+        if (self.weight > 100):
+            print("weight:::", self.weight)
         self.dw = 0
 
 class Graph:
