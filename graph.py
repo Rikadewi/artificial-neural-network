@@ -127,55 +127,22 @@ class Graph:
 
             self.children.printGraph()
 
-# grapha = Graph()
-# graphb = Graph()
-# graphc = Graph()
-# graphd = Graph()
-# graphe = Graph()
-# graphf = Graph()
-# graphg = Graph()
-# roota = Node(1)
-# rootb = Node(2)
-# rootc = Node(3)
-# rootd = Node(4)
-# roote = Node(5)
-# rootf = Node(6)
-# rootg = Node(7)
-# rooth = Node(8)
-# rooti = Node(9)edge
-# rootj = Node(10)
-# rootk = Node(11)
-# rootl = Node(12)
-# rootm = Node(13)
-# rootn = Node(14)
-# rooto = Node(15)
-# rootp = Node(16)
-# rootq = Node(17)
-# rootr = Node(18)
-# roots = Node(19)
-# grapha.addRoot(roota)
-# grapha.addRoot(rootb)
-# grapha.addRoot(rootc)
-# grapha.addRoot(rootd)
-# grapha.addRoot(roote)
-# graphb.addRoot(rootf)
-# graphb.addRoot(rootg)
-# graphb.addRoot(rooth)
-# graphc.addRoot(rooti)
-# graphc.addRoot(rootj)
-# graphc.addRoot(rootk)
-# graphd.addRoot(rootl)
-# graphd.addRoot(rootm)
-# graphd.addRoot(rootn)
-# graphe.addRoot(rooto)
-# grapha.addBias(rootp)
-# graphb.addBias(rootq)
-# graphc.addBias(rootr)
-# graphd.addBias(roots)
 
-# grapha.addChild(graphb)
-# graphb.addChild(graphc)
-# graphc.addChild(graphd)
-# graphd.addChild(graphe)
+    def printModel(self):
+        if self.children is not None:
+            for currentRoot in self.roots:
+                i = 0
+                for childRoot in self.children.roots:
+                    print(str(currentRoot.layer) + '.' + str(currentRoot.order) 
+                        + ' --(' + str(currentRoot.edges[i].weight) + ')--> ' 
+                        + str(childRoot.layer) + '.' + str(childRoot.order))
+                    i = i + 1
+            
+            i = 0
+            for childRoot in self.children.roots:
+                print(str(self.bias.layer) + '.' + str(self.bias.order) 
+                    + ' --(' + str(self.bias.edges[i].weight) + ')--> ' 
+                    + str(childRoot.layer) + '.' + str(childRoot.order))
+                i = i + 1
 
-# grapha.printGraph()
+            self.children.printModel()
