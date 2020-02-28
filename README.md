@@ -34,3 +34,5 @@ python main.py
     - default: 0.3
 7. `maxIteration`
     - default: 200
+7. `learningRate`
+    - default: 0.1

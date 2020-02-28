@@ -84,9 +84,9 @@ class NeuralNetwork:
 
         return self.graph
 
-    def updateAllDw(self):
+    def updateAllDw(self, learningRate):
         if self.graph:
-            self.graph.updateDw()
+            self.graph.updateDw(learningRate)
 
     def getGraphOutput(self):
         if (self.graph):
