@@ -25,6 +25,7 @@ class Edge:
 
     def __init__(self, learning_rate=0.1):
         self.weight = random.random()
+        # print(self.weight)
         self.dw = 0
         self.learning_rate = learning_rate
 

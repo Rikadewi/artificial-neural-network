@@ -85,6 +85,7 @@ class MultiLayerPerceptron:
                     idxbatch += 1
                     # print('batch baru')
                     self.nn[i].updateAllDw()
+                    # self.nn[i].graph.printGraph()
                     # print("ERRORLIST " + str(len(errorlist)))
                     # print(errorlist)
                     # print("SUM ERROR")
@@ -94,3 +95,18 @@ class MultiLayerPerceptron:
                 # print('nn baru')
                 # print()
         # print(iteration)
+
+    #x is array of feature data for predict
+    def predict(self, x):
+        predictCandidate = []
+        for nn in self.nn :
+            output = nn.feedForward(x).getLastOutput()
+            predictCandidate.append(output)
+        print(predictCandidate)
+
+        predictIndex = predictCandidate.index(max(predictCandidate))
+        print(predictIndex)
+
+        return self.unique[predictIndex]
+
+    
