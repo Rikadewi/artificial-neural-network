@@ -6,6 +6,4 @@ mlp = MultiLayerPerceptron(
     maxIteration=1
 )
 
-for nn in mlp.nn:
-    nn.graph.printGraph()
-print("accuracy:", mlp.accuration())
+mlp.printModel()

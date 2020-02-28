@@ -29,9 +29,6 @@ class MultiLayerPerceptron:
         self.df = pd.read_csv('data/' + filename + '.csv')
         self.target = target
 
-    def isContinuous(self, attr):
-        return not ((self.df[attr].dtypes == 'bool') or (self.df[attr].dtypes == 'object'))
-
     #assign neural network in self attribute
     def assignNeuralNetwork(self):
         self.nn = []
@@ -108,3 +105,9 @@ class MultiLayerPerceptron:
             if(self.predict(testDataSet[i]) == testValidationSet[i]):
                 hit += 1
         return float(hit) / float(len(testValidationSet))
+
+    def printModel(self):
+        for nn in self.nn:
+            nn.graph.printModel()
+        
+        print("\naccuracy:", self.accuration())
