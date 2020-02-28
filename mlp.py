@@ -66,6 +66,8 @@ class MultiLayerPerceptron:
 
     def miniBatch(self, batchsize, errorTreshold, maxIteration):
         # errorTreshold = 0.01
+        # self.nn[0].graph.printGraph()
+        # errortreshold = 0.01
         batches = self.makeBatches(batchsize)
         for i in range(0, len(self.nn)):
             # print("NN [" + str(i) + "]")
@@ -78,25 +80,26 @@ class MultiLayerPerceptron:
                     errorlist = []
                     for x in batches[idxbatch]:
                         self.nn[i].feedForward(x)
+                        self.nn[i].graph.printGraph()
                         self.nn[i].backPropagation(self.newdf[i][self.target][j])
-                        # self.nn[i].graph.printGraph()
+                        print('-------------------------')
+                        self.nn[i].graph.printGraph()
                         # print('-------------------------')
                         # print("ini x")
                         # print(x)
-                        # print("ini target")
-                        # print(self.newdf[i][self.target][j])
+                        print("ini target")
+                        print(self.newdf[i][self.target][j])
                         errorlist.append(self.nn[i].errorValue(self.newdf[i][self.target][j], self.nn[i].getGraphOutput()))
     
                         j += 1
                     idxbatch += 1
                     # print('batch baru')
                     self.nn[i].updateAllDw()
-                    # self.nn[i].graph.printGraph()
-                    # print("ERRORLIST " + str(len(errorlist)))
-                    # print(errorlist)
-                    # print("SUM ERROR")
+                    print("ERRORLIST " + str(len(errorlist)))
+                    print(errorlist)
+                    print("SUM ERROR")
                     error = np.sum(errorlist)
-                    # print(error)
+                    print(error)
                 iteration += 1
                 # print('nn baru')
                 # print()
