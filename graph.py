@@ -26,10 +26,8 @@ class Edge:
     def __init__(self, learning_rate=0.1):
         self.weight = 0.5
         self.dw = 0
+        self.dwBefore = 0
         self.learning_rate = learning_rate
-
-    def addDw(self, dw):
-        self.dw = self.dw + dw
 
     def updateWeight(self):
         self.weight = self.weight + self.dw * self.learning_rate

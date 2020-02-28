@@ -45,7 +45,6 @@ class NeuralNetwork:
         graph = self.makeSingleGraph(1)
         graphs[len(graphs)-1].addChild(graph)
         self.graph = graphs[0]
-        # graphs[0].printGraph()        
 
     def sigmaFunction(self, listData, listWeight):
         sum = 0
@@ -54,7 +53,6 @@ class NeuralNetwork:
         return sum
 
     def sigmoidFunction(self, data):
-        # print('data:', data)
         return 1/(math.exp(-data)+1)
         
     def deltaW(self, learningRate, target, output, input):
@@ -77,17 +75,10 @@ class NeuralNetwork:
             for i in range (0, len(nextGraph.roots)):
                 result = 0
                 for j in range (0, len(graphNow.roots)):
-                    print("weigh ", graphNow.roots[j].edges[i].weight)
-                    print("output ", graphNow.roots[j].output)
                     result+=graphNow.roots[j].edges[i].weight*graphNow.roots[j].output
-                    print("Result ", result)
                 result+=graphNow.bias.output*graphNow.bias.edges[i].weight
-                # print("result:", result)
-                # print("bias:", graphNow.bias.output)
-                # print("weight:", graphNow.bias.edges[i].weight)
                 result = self.sigmoidFunction(result)
                 nextGraph.roots[i].output = result
-                # print("RESULT = " + str(result))
             graphNow = nextGraph
             nextGraph = nextGraph.children
 
@@ -107,28 +98,22 @@ class NeuralNetwork:
 
     # private method of back propagation
     def _backPropagation(self, graph, y):
-        # add recursive somwhere, return graph
         if not graph.isOutput():
+            childGraph = self._backPropagation(graph.children, y)
             for root in graph.roots:
                 i = 0
                 for edge in root.edges:
                     # all dw before
                     sumDwChild = 0
-                    if graph.children.isOutput():
-                        sumDwChild = -(y - graph.children.roots[i].output)*graph.children.roots[i].output
-                        print('sumdwchild ', sumDwChild)
+                    if childGraph.isOutput():
+                        sumDwChild = -(y - childGraph.roots[i].output)*childGraph.roots[i].output
                     else:    
-                        _graph = deepcopy(graph.children)
-                        childGraph = self._backPropagation(_graph, y)
                         for edgeChild in childGraph.roots[i].edges:
-                            sumDwChild = edgeChild.dw*edgeChild.weight
-                        # graph.children = _graph
+                            sumDwChild = edgeChild.dwBefore*edgeChild.weight
                         
-
-                    edge.dw += sumDwChild*root.output*(1 - graph.children.roots[i].output)
-                    print('order ', i)
-                    print('layer ', graph.layer)
-                    print('edge.dw ', edge.dw)
+                    edge.dwBefore = sumDwChild*root.output*(1 - childGraph.roots[i].output)
+                    edge.dw += sumDwChild*root.output*(1 - childGraph.roots[i].output)
+                    
                     i = i + 1
 
             # update bias
@@ -136,13 +121,15 @@ class NeuralNetwork:
             for edge in graph.bias.edges:
                 # all dw before
                 sumDwChild = 0
-                if graph.children.isOutput():
-                    sumDwChild = -(y - graph.children.roots[i].output)*graph.children.roots[i].output
+                if childGraph.isOutput():
+                    sumDwChild = -(y - childGraph.roots[i].output)*childGraph.roots[i].output
                 else:
-                    for edgeChild in graph.children.roots[i].edges:
-                        sumDwChild = edgeChild.dw*edgeChild.weight
+                    for edgeChild in childGraph.roots[i].edges:
+                        sumDwChild = edgeChild.dwBefore*edgeChild.weight
 
-                edge.dw += sumDwChild*graph.bias.output*(1 - graph.children.roots[i].output)
+                edge.dwBefore = sumDwChild*graph.bias.output*(1 - childGraph.roots[i].output)
+                edge.dw += sumDwChild*graph.bias.output*(1 - childGraph.roots[i].output)
                 i = i + 1
-
+            
+            graph.children = childGraph
         return graph

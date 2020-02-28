@@ -20,3 +20,17 @@ python main.py
 
 ### Parameter
 
+1. `filename`
+    - default: iris
+2. `target`
+    - default: species
+3. `nHiddenLayer`
+    - default: 4
+4. `nNode`
+    - default: 10
+5. `batchsize`
+    - default: 30
+6. `errorTreshold`
+    - default: 0.3
+7. `maxIteration`
+    - default: 200

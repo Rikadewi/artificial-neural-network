@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np 
+from sklearn.model_selection import train_test_split
 from nn import NeuralNetwork
 
 class MultiLayerPerceptron:
@@ -12,13 +13,15 @@ class MultiLayerPerceptron:
     
     # constructor
     def __init__(self, 
-            filename='iris', target='species', nHiddenLayer = 1, 
-            nNode = 1, batchsize=32, errorTreshold=0.1, maxIteration=100):
+            filename='iris', target='species', nHiddenLayer = 4, 
+            nNode = 10, batchsize=30, errorTreshold=0.3, maxIteration=200):
         self.readCsv(filename, target)
+        self.splitDf()
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
         self.assignNeuralNetwork()
         self.miniBatch(batchsize, errorTreshold, maxIteration)
+        print("accuracy:", self.accuration())
 
     # read file csv with given filename in folder data
     def readCsv(self, filename, target):
@@ -59,12 +62,8 @@ class MultiLayerPerceptron:
         return batches
 
     def miniBatch(self, batchsize, errorTreshold, maxIteration):
-        # errorTreshold = 0.01
-        # self.nn[0].graph.printGraph()
-        # errortreshold = 0.01
         batches = self.makeBatches(batchsize)
         for i in range(0, len(self.nn)):
-            # print("NN [" + str(i) + "]")
             error = 100
             iteration = 0
             while(iteration < maxIteration) and (error > errorTreshold):
@@ -74,30 +73,15 @@ class MultiLayerPerceptron:
                     errorlist = []
                     for x in batches[idxbatch]:
                         self.nn[i].feedForward(x)
-                        self.nn[i].graph.printGraph()
                         self.nn[i].backPropagation(self.newdf[i][self.target][j])
-                        print('-------------------------')
-                        self.nn[i].graph.printGraph()
-                        # print('-------------------------')
-                        # print("ini x")
-                        # print(x)
-                        print("ini target")
-                        print(self.newdf[i][self.target][j])
+                        # self.nn[i].graph.printGraph()
                         errorlist.append(self.nn[i].errorValue(self.newdf[i][self.target][j], self.nn[i].getGraphOutput()))
     
                         j += 1
                     idxbatch += 1
-                    # print('batch baru')
                     self.nn[i].updateAllDw()
-                    print("ERRORLIST " + str(len(errorlist)))
-                    print(errorlist)
-                    print("SUM ERROR")
                     error = np.sum(errorlist)
-                    print(error)
                 iteration += 1
-                # print('nn baru')
-                # print()
-        # print(iteration)
 
     #x is array of feature data for predict
     def predict(self, x):
@@ -105,11 +89,21 @@ class MultiLayerPerceptron:
         for nn in self.nn :
             output = nn.feedForward(x).getLastOutput()
             predictCandidate.append(output)
-        print(predictCandidate)
 
         predictIndex = predictCandidate.index(max(predictCandidate))
-        print(predictIndex)
-
         return self.unique[predictIndex]
 
-    
+    def splitDf(self):
+        self.df , self.test = train_test_split(self.df, test_size = 0.2)
+        self.df = (self.df).reset_index(drop=True)
+        self.test = (self.test).reset_index(drop=True)
+
+    def accuration(self):
+        hit = 0
+        testDf = self.test.copy()
+        testDataSet = self.dropAttr(testDf, self.target).values.tolist()
+        testValidationSet = testDf[self.target].values.tolist()
+        for i in range(len(testDataSet)):
+            if(self.predict(testDataSet[i]) == testValidationSet[i]):
+                hit += 1
+        return float(hit) / float(len(testValidationSet))
