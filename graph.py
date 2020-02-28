@@ -23,16 +23,13 @@ class Edge:
     # weight
     # dw, accumulate this through a batch
 
-    def __init__(self, learning_rate=0.1):
-        self.weight = 0.5
+    def __init__(self):
+        self.weight = random.random()
         self.dw = 0
         self.dwBefore = 0
-        self.learning_rate = learning_rate
 
-    def updateWeight(self):
-        self.weight = self.weight + self.dw * self.learning_rate
-        if (self.weight > 100):
-            print("weight:::", self.weight)
+    def updateWeight(self, learningRate):
+        self.weight = self.weight + self.dw * learningRate
         self.dw = 0
 
 class Graph:
@@ -98,12 +95,12 @@ class Graph:
         for childRoot in children.roots:
             self.bias.addEdge(Edge())
 
-    def updateDw(self):
+    def updateDw(self, learningRate):
         for root in self.roots:            
             for edge in root.edges:
-                edge.updateWeight()
+                edge.updateWeight(learningRate)
         if (self.children):
-            self.children.updateDw()
+            self.children.updateDw(learningRate)
 
     def printGraph(self):
         if self.children is None:

@@ -15,13 +15,14 @@ class MultiLayerPerceptron:
     
     # constructor
     def __init__(self, 
-            filename='iris', target='species', nHiddenLayer = 4, 
+            filename='iris', target='species', learningRate=0.1, nHiddenLayer = 2, 
             nNode = 10, batchsize=30, errorTreshold=0.3, maxIteration=200):
         self.readCsv(filename, target)
-        self.splitDf()
+        self.learningRate = learningRate
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
         self.assignNeuralNetwork()
+        self.splitDf()
         self.miniBatch(batchsize, errorTreshold, maxIteration)
         print("accuracy:", self.accuration())
 
@@ -81,7 +82,7 @@ class MultiLayerPerceptron:
     
                         j += 1
                     idxbatch += 1
-                    self.nn[i].updateAllDw()
+                    self.nn[i].updateAllDw(self.learningRate)
                     error = np.sum(errorlist)
                 iteration += 1
 
