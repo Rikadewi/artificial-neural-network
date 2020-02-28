@@ -45,7 +45,6 @@ class NeuralNetwork:
         graph = self.makeSingleGraph(1)
         graphs[len(graphs)-1].addChild(graph)
         self.graph = graphs[0]
-        # graphs[0].printGraph()        
 
     def sigmaFunction(self, listData, listWeight):
         sum = 0
@@ -54,7 +53,6 @@ class NeuralNetwork:
         return sum
 
     def sigmoidFunction(self, data):
-        # print('data:', data)
         return 1/(math.exp(-data)+1)
         
     def deltaW(self, learningRate, target, output, input):
@@ -77,17 +75,10 @@ class NeuralNetwork:
             for i in range (0, len(nextGraph.roots)):
                 result = 0
                 for j in range (0, len(graphNow.roots)):
-                    # print("weigh ", graphNow.roots[j].edges[i].weight)
-                    # print("output ", graphNow.roots[j].output)
                     result+=graphNow.roots[j].edges[i].weight*graphNow.roots[j].output
-                    print("Result ", result)
                 result+=graphNow.bias.output*graphNow.bias.edges[i].weight
-                # print("result:", result)
-                # print("bias:", graphNow.bias.output)
-                # print("weight:", graphNow.bias.edges[i].weight)
                 result = self.sigmoidFunction(result)
                 nextGraph.roots[i].output = result
-                # print("RESULT = " + str(result))
             graphNow = nextGraph
             nextGraph = nextGraph.children
 
@@ -116,22 +107,13 @@ class NeuralNetwork:
                     sumDwChild = 0
                     if childGraph.isOutput():
                         sumDwChild = -(y - childGraph.roots[i].output)*childGraph.roots[i].output
-                        print('sumdwchild ', sumDwChild)
                     else:    
-                        
                         for edgeChild in childGraph.roots[i].edges:
-                            sumDwChild = edgeChild.dw*edgeChild.weight
-                        # childGraph = _graph
+                            sumDwChild = edgeChild.dwBefore*edgeChild.weight
                         
-                    print('root ', i)
-                    print('layer ', graph.layer)
-                    print('edge.dw before', edge.dw)
-                    wakgeng = sumDwChild*root.output*(1 - childGraph.roots[i].output)
-
-                    print('wakgeng', wakgeng)
-                    edge.dw = sumDwChild*root.output*(1 - childGraph.roots[i].output)
+                    edge.dwBefore = sumDwChild*root.output*(1 - childGraph.roots[i].output)
+                    edge.dw += sumDwChild*root.output*(1 - childGraph.roots[i].output)
                     
-                    print('edge.dw ', edge.dw)
                     i = i + 1
 
             # update bias
@@ -143,8 +125,9 @@ class NeuralNetwork:
                     sumDwChild = -(y - childGraph.roots[i].output)*childGraph.roots[i].output
                 else:
                     for edgeChild in childGraph.roots[i].edges:
-                        sumDwChild = edgeChild.dw*edgeChild.weight
+                        sumDwChild = edgeChild.dwBefore*edgeChild.weight
 
+                edge.dwBefore = sumDwChild*graph.bias.output*(1 - childGraph.roots[i].output)
                 edge.dw += sumDwChild*graph.bias.output*(1 - childGraph.roots[i].output)
                 i = i + 1
             
