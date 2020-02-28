@@ -3,9 +3,11 @@ from mlp import MultiLayerPerceptron
 mlp = MultiLayerPerceptron(
     learningRate = 0.2,
     nHiddenLayer = 3, 
-    nNode = 10, 
-    maxIteration=200
+    nNode = 3, 
+    errorTreshold = 0.3,
+    maxIteration=10
 )
 
 for nn in mlp.nn:
     nn.graph.printGraph()
+print("accuracy:", mlp.accuration())

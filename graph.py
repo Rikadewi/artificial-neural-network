@@ -96,6 +96,8 @@ class Graph:
             self.bias.addEdge(Edge())
 
     def updateDw(self, learningRate):
+        for edge in self.bias.edges:
+            edge.updateWeight(learningRate)
         for root in self.roots:            
             for edge in root.edges:
                 edge.updateWeight(learningRate)

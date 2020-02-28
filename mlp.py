@@ -24,7 +24,6 @@ class MultiLayerPerceptron:
         self.assignNeuralNetwork()
         self.splitDf()
         self.miniBatch(batchsize, errorTreshold, maxIteration)
-        print("accuracy:", self.accuration())
 
     # read file csv with given filename in folder data
     def readCsv(self, filename, target):
