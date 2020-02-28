@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np 
+from sklearn.model_selection import train_test_split
 from nn import NeuralNetwork
 
 class MultiLayerPerceptron:
@@ -12,9 +13,14 @@ class MultiLayerPerceptron:
     
     # constructor
     def __init__(self, 
-            filename='iris', target='species', nHiddenLayer = 1, 
-            nNode = 1, batchsize=32, errorTreshold=0.1, maxIteration=100):
+            filename='iris', target='species', nHiddenLayer = 4, 
+            nNode = 4, batchsize=32, errorTreshold=0.1, maxIteration=10):
         self.readCsv(filename, target)
+        self.splitDf()
+        # print(self.df)
+        # print(self.test)
+        # print(self.accuration())
+
         self.nHiddenLayer = nHiddenLayer
         self.nNode = nNode
         self.assignNeuralNetwork()
@@ -100,13 +106,38 @@ class MultiLayerPerceptron:
     def predict(self, x):
         predictCandidate = []
         for nn in self.nn :
+            # nn.graph.printGraph()
             output = nn.feedForward(x).getLastOutput()
             predictCandidate.append(output)
         print(predictCandidate)
 
         predictIndex = predictCandidate.index(max(predictCandidate))
         print(predictIndex)
+        # print(self.unique[predictIndex])
+        print(self.unique)
 
         return self.unique[predictIndex]
+
+    def splitDf(self):
+        self.df , self.test = train_test_split(self.df, test_size = 0.2)
+        # print(self.df)
+        self.df = (self.df).reset_index(drop=True)
+        # print(self.df)
+        self.test = (self.test).reset_index(drop=True)
+
+
+    def accuration(self):
+        hit = 0
+        testDf = self.test.copy()
+        testDataSet = self.dropAttr(testDf, self.target).values.tolist()
+        testValidationSet = testDf[self.target].values.tolist()
+        # print(testDataSet)
+        # print(testValidationSet)
+        for i in range(len(testDataSet)):
+            # if("setosa" == testValidationSet[i]):
+            if(self.predict(testDataSet[i]) == testValidationSet[i]):
+                hit += 1
+        return float(hit) / float(len(testValidationSet))
+        # print(testData)
 
     
