@@ -13,8 +13,8 @@ class MultiLayerPerceptron:
     
     # constructor
     def __init__(self, 
-            filename='iris', target='species', learningRate=0.1, nHiddenLayer = 2, 
-            nNode = 10, batchsize=30, errorTreshold=0.3, maxIteration=200, seed=13517006):
+            filename='iris', target='species', learningRate=0.1, nHiddenLayer = 3, 
+            nNode = 10, batchsize=30, errorTreshold=0.3, maxIteration=100, seed=1742):
         self.readCsv(filename, target)
         self.learningRate = learningRate
         self.nHiddenLayer = nHiddenLayer

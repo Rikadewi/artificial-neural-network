@@ -12,8 +12,9 @@ Make sure you have following software installed in your system
 * python 3.7.3
 * pandas
 * numpy
+* sklearn
 
-### Run on local server
+### Run on local
 ```
 python main.py
 ```
@@ -25,7 +26,7 @@ python main.py
 2. `target`
     - default: species
 3. `nHiddenLayer`
-    - default: 4
+    - default: 3
 4. `nNode`
     - default: 10
 5. `batchsize`
@@ -33,6 +34,8 @@ python main.py
 6. `errorTreshold`
     - default: 0.3
 7. `maxIteration`
-    - default: 200
+    - default: 100
 7. `learningRate`
     - default: 0.1
+8. `seed`
+    - default: 1742
