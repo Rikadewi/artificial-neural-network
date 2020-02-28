@@ -24,8 +24,7 @@ class Edge:
     # dw, accumulate this through a batch
 
     def __init__(self, learning_rate=0.1):
-        self.weight = random.random()
-        # print(self.weight)
+        self.weight = 0.5
         self.dw = 0
         self.learning_rate = learning_rate
 
